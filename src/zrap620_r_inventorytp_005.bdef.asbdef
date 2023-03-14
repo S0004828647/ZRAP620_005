@@ -1,0 +1,58 @@
+managed implementation in class ZRAP620_BP_InventoryTP_005 unique;
+//strict ( 2 );
+strict ;
+with draft;
+
+define behavior for ZRAP620_R_INVENTORYTP_005 alias Inventory
+persistent table zrap620_inven005
+draft table zrap620_dinv005
+etag master LastChangedAt
+lock master total etag LocalLastChangedAt
+authorization master ( global )
+
+{
+  field ( readonly )
+  Price, //determined via determination
+  InventoryID, //semantic key
+  UUID,
+  CreatedAt,
+  CreatedBy,
+  LocalLastChangedAt,
+  LastChangedAt,
+  LastChangedBy;
+
+  field ( numbering : managed )
+  UUID;
+
+
+  create;
+  update;
+  delete;
+
+  draft action Edit;
+  draft action Activate;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+
+  determination CalculateInventoryID on save { create; }
+  determination GetPrice on modify { field ProductID; }
+
+  mapping for ZRAP620_INVEN005
+  {
+    UUID = uuid;
+    InventoryID = inventory_id;
+    ProductID = product_id;
+    Quantity = quantity;
+    QuantityUnit = quantity_unit;
+    Price = price;
+    CurrencyCode = currency_code;
+    Description = description;
+    OverallStatus = overall_status;
+    CreatedBy = created_by;
+    CreatedAt = created_at;
+    LastChangedBy = last_changed_by;
+    LastChangedAt = last_changed_at;
+    LocalLastChangedAt = local_last_changed_at;
+  }
+}
